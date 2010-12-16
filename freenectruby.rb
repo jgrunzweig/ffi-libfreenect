@@ -22,11 +22,11 @@ module FreenectRuby
 	
 	Freenect_led_options = enum( :led_off, 0,
                                :led_green, 1,
-	                   :led_red, 2,
-		       :led_yellow, 3,
-		       :led_blink_yellow, 4,
-		       :led_blink_green, 5,
-		       :led_blink_red_yellow, 6) 
+	                             :led_red, 2,
+		                           :led_yellow, 3,
+		                           :led_blink_yellow, 4,
+		                           :led_blink_green, 5,
+		                           :led_blink_red_yellow, 6) 
 	
   #    typedef enum {
   #     	FREENECT_VIDEO_RGB = 0,
@@ -39,12 +39,12 @@ module FreenectRuby
   #    } freenect_video_format;
 	
 	Freenect_video_format = enum( :freenect_video_rgb, 0,
-					           :freenect_video_bayer, 1,
-					           :freenect_video_ir_8bit, 2,
-					           :freenect_video_ir_10bit, 3,
-					           :freenect_video_ir_10bit_packed, 4,
-  				                       :freenect_video_yuv_rgb, 5,
-					           :freenect_video_yuv_raw, 6)
+					                      :freenect_video_bayer, 1,
+					                      :freenect_video_ir_8bit, 2,
+					                      :freenect_video_ir_10bit, 3,
+					                      :freenect_video_ir_10bit_packed, 4,
+  				                      :freenect_video_yuv_rgb, 5,
+					                      :freenect_video_yuv_raw, 6)
 	
   #     typedef enum {
   #        	FREENECT_DEPTH_11BIT = 0,
@@ -54,9 +54,9 @@ module FreenectRuby
   #     } freenect_depth_format;
 	
 	Freenect_depth_format = enum( :freenect_depth_11bit, 0,
-				                       :freenect_depth_10bit, 1,
-				                       :freenect_depth_11bit_packed, 2,
-				                       :freenect_depth_10bit_packed, 3)
+				                        :freenect_depth_10bit, 1,
+				                        :freenect_depth_11bit_packed, 2,
+				                        :freenect_depth_10bit_packed, 3)
 
   #     typedef enum {
   #        	TILT_STATUS_STOPPED = 0x00,
@@ -65,8 +65,8 @@ module FreenectRuby
   #     } freenect_tilt_status_code;
 
 	Freenect_tilt_status_code = enum( :tilt_status_stopped, '0x00',
-  				                            :tilt_status_limit, '0x01',
-					                :tilt_status_moving, '0x04')
+  				                          :tilt_status_limit, '0x01',
+					                          :tilt_status_moving, '0x04')
 	
   #     typedef enum {
   #        	FREENECT_LOG_FATAL = 0,
@@ -80,13 +80,13 @@ module FreenectRuby
   #     } freenect_loglevel;
 	
 	Freenect_loglevel = enum( :freenect_log_fatal, 0,
-				              :freenect_log_error, 
-				              :freenect_log_warning,
-				              :freenect_log_notice,
-				              :freenect_log_info,
-				              :freenect_log_debug,
-				              :freenect_log_spew,
-				              :freenect_log_flood)
+				                    :freenect_log_error, 
+				                    :freenect_log_warning,
+				                    :freenect_log_notice,
+				                    :freenect_log_info,
+				                    :freenect_log_debug,
+				                    :freenect_log_spew,
+				                    :freenect_log_flood)
 	
   #
   #
@@ -103,10 +103,10 @@ module FreenectRuby
 	
 	class Freenect_Raw_Tilt_State < FFI::Struct
 		layout :accelerometer_x, :int16_t,
-			:accelerometer_y, :int16_t,
-			:accelerometer_z, :int16_t, 
-			:tilt_angle, :int8_t, 
-                                    :tilt_status, Freenect_tilt_status_code
+		       :accelerometer_y, :int16_t,
+			     :accelerometer_z, :int16_t, 
+			     :tilt_angle, :int8_t, 
+           :tilt_status, Freenect_tilt_status_code
   end
 
   #
