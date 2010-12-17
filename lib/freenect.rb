@@ -1,111 +1,111 @@
 require 'ffi'
 
-module FreenectRuby
+module Freenect
   extend FFI::Library
-  ffi_lib 'libfreenect'
-	
-	
+  ffi_lib 'freenect'
+  
+  
   #
   #
   #    *******  ENUMS *******
   #
-  #	
+  #  
   #   typedef enum {
-  #	      LED_OFF    = 0,
-  #	      LED_GREEN  = 1,
-  #	      LED_RED    = 2,
-  #	      LED_YELLOW = 3,
-  #	      LED_BLINK_YELLOW = 4,
-  #	      LED_BLINK_GREEN = 5,
-  #	      LED_BLINK_RED_YELLOW = 6
+  #        LED_OFF    = 0,
+  #        LED_GREEN  = 1,
+  #        LED_RED    = 2,
+  #        LED_YELLOW = 3,
+  #        LED_BLINK_YELLOW = 4,
+  #        LED_BLINK_GREEN = 5,
+  #        LED_BLINK_RED_YELLOW = 6
   #   } freenect_led_options;
-	
-	Freenect_led_options = enum( :led_off, 0,
+  
+  Freenect_led_options = enum( :led_off, 0,
                                :led_green, 1,
-	                             :led_red, 2,
-		                           :led_yellow, 3,
-		                           :led_blink_yellow, 4,
-		                           :led_blink_green, 5,
-		                           :led_blink_red_yellow, 6) 
-	
+                               :led_red, 2,
+                               :led_yellow, 3,
+                               :led_blink_yellow, 4,
+                               :led_blink_green, 5,
+                               :led_blink_red_yellow, 6) 
+  
   #    typedef enum {
-  #     	FREENECT_VIDEO_RGB = 0,
-  #      	FREENECT_VIDEO_BAYER = 1,
-  #      	FREENECT_VIDEO_IR_8BIT = 2,
-  #     	FREENECT_VIDEO_IR_10BIT = 3,
-  #      	FREENECT_VIDEO_IR_10BIT_PACKED = 4,
-  #      	FREENECT_VIDEO_YUV_RGB = 5,
-  #      	FREENECT_VIDEO_YUV_RAW = 6,
+  #       FREENECT_VIDEO_RGB = 0,
+  #        FREENECT_VIDEO_BAYER = 1,
+  #        FREENECT_VIDEO_IR_8BIT = 2,
+  #       FREENECT_VIDEO_IR_10BIT = 3,
+  #        FREENECT_VIDEO_IR_10BIT_PACKED = 4,
+  #        FREENECT_VIDEO_YUV_RGB = 5,
+  #        FREENECT_VIDEO_YUV_RAW = 6,
   #    } freenect_video_format;
-	
-	Freenect_video_format = enum( :freenect_video_rgb, 0,
-					                      :freenect_video_bayer, 1,
-					                      :freenect_video_ir_8bit, 2,
-					                      :freenect_video_ir_10bit, 3,
-					                      :freenect_video_ir_10bit_packed, 4,
-  				                      :freenect_video_yuv_rgb, 5,
-					                      :freenect_video_yuv_raw, 6)
-	
+  
+  Freenect_video_format = enum( :freenect_video_rgb, 0,
+                                :freenect_video_bayer, 1,
+                                :freenect_video_ir_8bit, 2,
+                                :freenect_video_ir_10bit, 3,
+                                :freenect_video_ir_10bit_packed, 4,
+                                :freenect_video_yuv_rgb, 5,
+                                :freenect_video_yuv_raw, 6)
+  
   #     typedef enum {
-  #        	FREENECT_DEPTH_11BIT = 0,
-  #        	FREENECT_DEPTH_10BIT = 1,
-  #        	FREENECT_DEPTH_11BIT_PACKED = 2,
-  #        	FREENECT_DEPTH_10BIT_PACKED = 3,
+  #          FREENECT_DEPTH_11BIT = 0,
+  #          FREENECT_DEPTH_10BIT = 1,
+  #          FREENECT_DEPTH_11BIT_PACKED = 2,
+  #          FREENECT_DEPTH_10BIT_PACKED = 3,
   #     } freenect_depth_format;
-	
-	Freenect_depth_format = enum( :freenect_depth_11bit, 0,
-				                        :freenect_depth_10bit, 1,
-				                        :freenect_depth_11bit_packed, 2,
-				                        :freenect_depth_10bit_packed, 3)
+  
+  Freenect_depth_format = enum( :freenect_depth_11bit, 0,
+                                :freenect_depth_10bit, 1,
+                                :freenect_depth_11bit_packed, 2,
+                                :freenect_depth_10bit_packed, 3)
 
   #     typedef enum {
-  #        	TILT_STATUS_STOPPED = 0x00,
-  #       	TILT_STATUS_LIMIT = 0x01,
-  #        	TILT_STATUS_MOVING = 0x04
+  #          TILT_STATUS_STOPPED = 0x00,
+  #         TILT_STATUS_LIMIT = 0x01,
+  #          TILT_STATUS_MOVING = 0x04
   #     } freenect_tilt_status_code;
 
-	Freenect_tilt_status_code = enum( :tilt_status_stopped, '0x00',
-  				                          :tilt_status_limit, '0x01',
-					                          :tilt_status_moving, '0x04')
-	
+  Freenect_tilt_status_code = enum( :tilt_status_stopped, '0x00',
+                                    :tilt_status_limit, '0x01',
+                                    :tilt_status_moving, '0x04')
+  
   #     typedef enum {
-  #        	FREENECT_LOG_FATAL = 0,
-  #        	FREENECT_LOG_ERROR,
-  #        	FREENECT_LOG_WARNING,
-  #        	FREENECT_LOG_NOTICE,
-  #        	FREENECT_LOG_INFO,
-  #        	FREENECT_LOG_DEBUG,
-  #        	FREENECT_LOG_SPEW,
-  #       	FREENECT_LOG_FLOOD,
+  #          FREENECT_LOG_FATAL = 0,
+  #          FREENECT_LOG_ERROR,
+  #          FREENECT_LOG_WARNING,
+  #          FREENECT_LOG_NOTICE,
+  #          FREENECT_LOG_INFO,
+  #          FREENECT_LOG_DEBUG,
+  #          FREENECT_LOG_SPEW,
+  #         FREENECT_LOG_FLOOD,
   #     } freenect_loglevel;
-	
-	Freenect_loglevel = enum( :freenect_log_fatal, 0,
-				                    :freenect_log_error, 
-				                    :freenect_log_warning,
-				                    :freenect_log_notice,
-				                    :freenect_log_info,
-				                    :freenect_log_debug,
-				                    :freenect_log_spew,
-				                    :freenect_log_flood)
-	
+  
+  Freenect_loglevel = enum( :freenect_log_fatal, 0,
+                            :freenect_log_error, 
+                            :freenect_log_warning,
+                            :freenect_log_notice,
+                            :freenect_log_info,
+                            :freenect_log_debug,
+                            :freenect_log_spew,
+                            :freenect_log_flood)
+  
   #
   #
   #    *******  STRUCTS *******
   #
-  #		
+  #    
   #   typedef struct {
-  #      	int16_t accelerometer_x;
-  #      	int16_t accelerometer_y;
-  #      	int16_t accelerometer_z;
-  #     	int8_t tilt_angle;
-  #      	freenect_tilt_status_code tilt_status;
-  #   } freenect_raw_tilt_state;			              
-	
-	class Freenect_Raw_Tilt_State < FFI::Struct
-		layout :accelerometer_x, :int16_t,
-		       :accelerometer_y, :int16_t,
-			     :accelerometer_z, :int16_t, 
-			     :tilt_angle, :int8_t, 
+  #        int16_t accelerometer_x;
+  #        int16_t accelerometer_y;
+  #        int16_t accelerometer_z;
+  #       int8_t tilt_angle;
+  #        freenect_tilt_status_code tilt_status;
+  #   } freenect_raw_tilt_state;                    
+  
+  class Freenect_Raw_Tilt_State < FFI::Struct
+    layout :accelerometer_x, :int16_t,
+           :accelerometer_y, :int16_t,
+           :accelerometer_z, :int16_t, 
+           :tilt_angle, :int8_t, 
            :tilt_status, Freenect_tilt_status_code
   end
 
@@ -129,10 +129,10 @@ module FreenectRuby
   #
   # void freenect_set_log_level(freenect_context *ctx, freenect_loglevel level);
   # void freenect_set_log_callback(freenect_context *ctx, freenect_log_cb cb);
-	
+  
   attach_function :freenect_set_log_level, [:pointer, Freenect_loglevel], :void
   attach_function :freenect_set_log_callback, [:pointer, :freenect_log_cb], :void
-	
+  
   #
   #
   #    *******  INITIALIZE/SHUTDOWN FUNCTIONS *******
@@ -151,19 +151,19 @@ module FreenectRuby
   attach_function :freenect_num_devices, [:pointer], :int
   attach_function :freenect_open_device, [:pointer, :pointer, :int], :int
   attach_function :freenect_close_device, [:pointer], :int
-	
+  
   # void freenect_set_user(freenect_device *dev, void *user);
   # void *freenect_get_user(freenect_device *dev);
-	
+  
   attach_function :freenect_set_user, [:pointer, :void], :void
   attach_function :freenect_get_user, [:pointer], :void
-	
+  
   #
   #
   #    *******  VIDEO/DEPTH FUNCTIONS *******
   #
   #
-	# void freenect_set_depth_callback(freenect_device *dev, freenect_depth_cb cb);
+  # void freenect_set_depth_callback(freenect_device *dev, freenect_depth_cb cb);
   # void freenect_set_video_callback(freenect_device *dev, freenect_video_cb cb);
   # int freenect_set_depth_format(freenect_device *dev, freenect_depth_format fmt);
   # int freenect_set_video_format(freenect_device *dev, freenect_video_format fmt);
@@ -175,7 +175,7 @@ module FreenectRuby
   # int freenect_stop_video(freenect_device *dev);
   
   attach_function :freenect_set_depth_callback, [:pointer, :freenect_depth_cb], :void
-  attach_function :freenect_set_video_callback, [:pointer, :freenect_video_cb], :void	
+  attach_function :freenect_set_video_callback, [:pointer, :freenect_video_cb], :void  
   attach_function :freenect_set_depth_format, [:pointer, Freenect_depth_format], :int
   attach_function :freenect_set_video_format, [:pointer, Freenect_video_format], :int
   attach_function :freenect_set_depth_buffer, [:pointer, :void], :int
@@ -190,14 +190,14 @@ module FreenectRuby
   #    *******  TILT FUNCTIONS *******
   #
   #
-	# int freenect_update_tilt_state(freenect_device *dev);
+  # int freenect_update_tilt_state(freenect_device *dev);
   # freenect_raw_tilt_state* freenect_get_tilt_state(freenect_device *dev);
   # double freenect_get_tilt_degs(freenect_raw_tilt_state *state);
   # int freenect_set_tilt_degs(freenect_device *dev, double angle);
   #
   # Example: puts "Set Tilt: 10 degrees"
   #          FreenectRuby.freenect_set_tilt_degs(dev, 10.0)
-	
+  
   attach_function :freenect_update_tilt_state, [:pointer], :int
   attach_function :freenect_get_tilt_state, [:pointer], Freenect_Raw_Tilt_State
   attach_function :freenect_get_tilt_degs, [:pointer], :double
