@@ -1,0 +1,1 @@
+require 'ffi/freenectruby/freenectruby.rb'
