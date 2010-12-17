@@ -1,4 +1,4 @@
-$: << '../lib'
+$: << File.expand_path(File.join(File.dirname(__FILE__), '../lib'))
 require 'freenect'
 
 ctx = FFI::MemoryPointer.new(:pointer)
