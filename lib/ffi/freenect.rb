@@ -6,7 +6,7 @@ end
 
 require 'ffi'
 
-module Freenect
+module FFI::Freenect
   extend FFI::Library
   ffi_lib 'freenect'
   
