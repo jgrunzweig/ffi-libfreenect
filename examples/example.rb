@@ -1,4 +1,4 @@
-require './freenectruby.rb'
+require '../lib/ffi/freenectruby/freenectruby'
 
 ctx = FFI::MemoryPointer.new(:pointer)
 dev = FFI::MemoryPointer.new(:pointer)
