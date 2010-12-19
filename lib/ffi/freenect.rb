@@ -161,8 +161,8 @@ module FFI::Freenect
   attach_function :freenect_set_led, [:freenect_device, LED_OPTIONS], :int
   attach_function :freenect_get_mks_accel, [RawTiltState, :pointer, :pointer, :pointer], :void
 
-  attach_function :freenect_sync_get_video, [:pointer, :pointer, int, VIDEO_FORMATS], :int
-  attach_function :freenect_sync_get_depth, [:pointer, :pointer, int, DEPTH_FORMATS], :int
+  attach_function :freenect_sync_get_video, [:pointer, :pointer, :int, VIDEO_FORMATS], :int
+  attach_function :freenect_sync_get_depth, [:pointer, :pointer, :int, DEPTH_FORMATS], :int
 
 end
 
