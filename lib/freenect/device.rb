@@ -38,17 +38,11 @@ module Freenect
       end
     end
 
-    def set_user(user)
-      ::FFI::Freenect.freenect_set_user(device, user)
-    end
-
-    alias user= set_user
-
-    def get_user
+    def get_user_data
       ::FFI::Freenect.freenect_get_user(device)
     end
 
-    alias user get_user
+    alias user_data get_user_data
 
     def get_tilt_state
       unless (p=::FFI::Freenect.freenect_get_tilt_state(device)).null?
@@ -65,6 +59,63 @@ module Freenect
     end
 
     alias tilt_degs get_tilt_degs
+
+
+    def set_depth_callback(&block)
+      ::FFI::Freenect.freenect_set_depth_callback(device, block)
+    end
+
+    def set_video_callback(&block)
+      ::FFI::Freenect.freenect_set_video_callback(device, block)
+    end
+
+    def start_depth
+      ::FFI::Freenect.freenect_start_depth(device)
+    end
+
+    def stop_depth
+      ::FFI::Freenect.freenect_stop_depth(device)
+    end
+
+    def start_video
+      ::FFI::Freenect.freenect_start_video(device)
+    end
+
+    def stop_video
+      ::FFI::Freenect.freenect_stop_video(device)
+    end
+
+    def set_depth_format(fmt)
+      ::FFI::Freenect.freenect_set_depth_format(device, fmt)
+    end
+
+    def set_video_format(fmt)
+      ::FFI::Freenect.freenect_set_depth_format(device, fmt)
+    end
+
+    private
+    def set_depth_buffer(buf)
+    end
+
+    def set_video_buffer(buf)
+    end
+
+    def set_user_data(user)
+      ::FFI::Freenect.freenect_set_user(device, user)
+    end
+
+    def update_tilt_state
+      ::FFI::Freenect.freenect_update_tilt_state(device)
+    end
+
+    def set_tilt_degrees(angle)
+      ::FFI::Freenect.freenect_set_tilt_degs(device, angle)
+    end
+
+    def set_led(mode)
+      ::FFI::Freenect.freenect_set_led(device, mode)
+    end
+    alias user_data= set_user_data
 
   end
 end
