@@ -8,7 +8,7 @@ require 'ffi'
 
 module FFI::Freenect
   extend FFI::Library
-  ffi_lib 'freenect'
+  ffi_lib 'freenect', 'freenect_sync'
   
   FRAME_W = 640
   FRAME_H = 480
@@ -33,42 +33,89 @@ module FFI::Freenect
 
   COUNTS_PER_G = 819
 
-  LED_OPTIONS = enum( :off,               0,
-                      :green,             1,
-                      :red,               2,
-                      :yellow,            3,
-                      :blink_yellow,      4,
-                      :blink_green,       5,
-                      :blink_red_yellow,  6) 
- 
- 
-  VIDEO_FORMATS = enum( :rgb,             0,
-                        :bayer,           1,
-                        :ir_8bit,         2,
-                        :ir_10bit,        3,
-                        :ir_10bit_packed, 4,
-                        :yuv_rgb,         5,
-                        :yuv_raw,         6)
-  
- 
-  DEPTH_FORMATS = enum( :depth_11bit,         0,
-                        :depth_10bit,         1,
-                        :depth_11bit_packed,  2,
-                        :depth_10bit_packed,  3)
+	LED_OFF    = 0
+	LED_GREEN  = 1
+	LED_RED    = 2
+	LED_YELLOW = 3
+	LED_BLINK_YELLOW = 4
+	LED_BLINK_GREEN = 5
+	LED_BLINK_RED_YELLOW = 6
 
-  STATUS_CODES = enum( :stopped,  0x00,
-                       :limit,    0x01,
-                       :moving,   0x04)
-  
+  LED_OPTIONS = enum( :off,               LED_OFF,
+                      :green,             LED_GREEN,
+                      :red,               LED_RED,
+                      :yellow,            LED_YELLOW,
+                      :blink_yellow,      LED_BLINK_YELLOW,
+                      :blink_green,       LED_BLINK_GREEN,
+                      :blink_red_yellow,  LED_BLINK_RED_YELLOW) 
  
-  LOGLEVELS = enum( :fatal,   0,
-                    :error,   1,
-                    :warning, 2,
-                    :notice,  3,
-                    :info,    4,
-                    :debug,   5,
-                    :spew,    6,
-                    :flood,   7)
+ 
+	VIDEO_RGB = 0
+	VIDEO_BAYER = 1
+	VIDEO_IR_8BIT = 2
+	VIDEO_IR_10BIT = 3
+	VIDEO_IR_10BIT_PACKED = 4
+	VIDEO_YUV_RGB = 5
+	VIDEO_YUV_RAW = 6
+
+  VIDEO_FORMATS = enum( :rgb,             VIDEO_RGB,
+                        :bayer,           VIDEO_BAYER,
+                        :ir_8bit,         VIDEO_IR_8BIT,
+                        :ir_10bit,        VIDEO_IR_10BIT,
+                        :ir_10bit_packed, VIDEO_IR_10BIT_PACKED,
+                        :yuv_rgb,         VIDEO_YUV_RGB,
+                        :yuv_raw,         VIDEO_YUV_RAW)
+  
+  VIDEO_SIZES = enum( :rgb,             RGB_SIZE,
+                      :bayer,           BAYER_SIZE,
+                      :ir_8bit,         IR_8BIT_SIZE,
+                      :ir_10bit,        IR_10BIT_SIZE,
+                      :yuv_rgb,         YUV_RGB_SIZE,
+                      :yuv_raw,         YUV_RAW_SIZE,
+                      :ir_10bit_packed, IR_10BIT_PACKED_SIZE )
+
+ 
+	DEPTH_11BIT = 0
+	DEPTH_10BIT = 1
+	DEPTH_11BIT_PACKED = 2
+	DEPTH_10BIT_PACKED = 3
+
+  DEPTH_FORMATS = enum( :depth_11bit,         DEPTH_11BIT,
+                        :depth_10bit,         DEPTH_10BIT,
+                        :depth_11bit_packed,  DEPTH_11BIT_PACKED,
+                        :depth_10bit_packed,  DEPTH_10BIT_PACKED)
+
+  DEPTH_SIZES = enum( :depth_11bit,         DEPTH_11BIT_SIZE,
+                      :depth_10bit,         DEPTH_10BIT_SIZE,
+                      :depth_11bit_packed,  DEPTH_11BIT_PACKED_SIZE,
+                      :depth_10bit_packed,  DEPTH_10BIT_PACKED_SIZE )
+
+	TILT_STATUS_STOPPED = 0x00
+	TILT_STATUS_LIMIT = 0x01
+	TILT_STATUS_MOVING = 0x04
+
+  TILT_STATUS_CODES = enum( :stopped,  TILT_STATUS_STOPPED,
+                            :limit,    TILT_STATUS_LIMIT,
+                            :moving,   TILT_STATUS_MOVING)
+
+ 
+	LOG_FATAL = 0
+	LOG_ERROR = 1
+	LOG_WARNING = 2 
+	LOG_NOTICE = 3
+	LOG_INFO = 4
+	LOG_DEBUG = 5
+	LOG_SPEW = 6
+	LOG_FLOOD = 7
+
+  LOGLEVELS = enum( :fatal,   LOG_FATAL,
+                    :error,   LOG_ERROR,
+                    :warning, LOG_WARNING,
+                    :notice,  LOG_NOTICE,
+                    :info,    LOG_INFO,
+                    :debug,   LOG_DEBUG,
+                    :spew,    LOG_SPEW,
+                    :flood,   LOG_FLOOD)
   
   typedef :pointer, :freenect_context
   typedef :pointer, :freenect_device
@@ -80,7 +127,7 @@ module FFI::Freenect
            :accelerometer_y,  :int16_t,
            :accelerometer_z,  :int16_t, 
            :tilt_angle,       :int8_t, 
-           :tilt_status,      STATUS_CODES
+           :tilt_status,      TILT_STATUS_CODES
   end
 
   callback :freenect_log_cb, [:freenect_context, LOGLEVELS, :string], :void
@@ -113,6 +160,9 @@ module FFI::Freenect
   attach_function :freenect_set_tilt_degs, [:freenect_device, :double], :int
   attach_function :freenect_set_led, [:freenect_device, LED_OPTIONS], :int
   attach_function :freenect_get_mks_accel, [RawTiltState, :pointer, :pointer, :pointer], :void
+
+  attach_function :freenect_sync_get_video, [:pointer, :pointer, int, VIDEO_FORMATS], :int
+  attach_function :freenect_sync_get_depth, [:pointer, :pointer, int, DEPTH_FORMATS], :int
 
 end
 
