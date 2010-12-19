@@ -64,7 +64,7 @@ module FFI::Freenect
                         :ir_10bit,        VIDEO_IR_10BIT,
                         :ir_10bit_packed, VIDEO_IR_10BIT_PACKED,
                         :yuv_rgb,         VIDEO_YUV_RGB,
-                        :yuv_raw,         VIDEO_YUV_RAW)
+                        :yuv_raw,         VIDEO_YUV_RAW )
   
   VIDEO_SIZES = enum( :rgb,             RGB_SIZE,
                       :bayer,           BAYER_SIZE,
@@ -163,6 +163,7 @@ module FFI::Freenect
 
   attach_function :freenect_sync_get_video, [:pointer, :pointer, :int, VIDEO_FORMATS], :int
   attach_function :freenect_sync_get_depth, [:pointer, :pointer, :int, DEPTH_FORMATS], :int
+  attach_function :freenect_sync_stop, [], :void
 
 end
 
