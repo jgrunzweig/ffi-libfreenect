@@ -16,6 +16,7 @@ module Freenect
       end
 
       @dev = dev_p.read_pointer
+      set_tilt_degrees(0.0)
     end
 
     def closed?
@@ -93,6 +94,15 @@ module Freenect
       ::FFI::Freenect.freenect_set_depth_format(device, fmt)
     end
 
+    def set_tilt_degrees(angle)
+      ::FFI::Freenect.freenect_set_tilt_degs(device, angle)
+      update_tilt_state()
+    end
+
+    def set_led(mode)
+      ::FFI::Freenect.freenect_set_led(device, mode)
+    end
+
     private
     def set_depth_buffer(buf)
     end
@@ -103,19 +113,11 @@ module Freenect
     def set_user_data(user)
       ::FFI::Freenect.freenect_set_user(device, user)
     end
+    alias user_data= set_user_data
 
     def update_tilt_state
       ::FFI::Freenect.freenect_update_tilt_state(device)
     end
-
-    def set_tilt_degrees(angle)
-      ::FFI::Freenect.freenect_set_tilt_degs(device, angle)
-    end
-
-    def set_led(mode)
-      ::FFI::Freenect.freenect_set_led(device, mode)
-    end
-    alias user_data= set_user_data
 
   end
 end
