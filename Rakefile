@@ -1,26 +1,44 @@
-load 'tasks/setup.rb'
+require 'rubygems'
+require 'rake'
 
-ensure_in_path 'lib'
+begin
+  require 'jeweler'
+  Jeweler::Tasks.new do |gem|
+    gem.name = "ffi-libfreenect"
+    gem.summary = gem.description = %Q{FFI bindings for the libfreenect OpenKinect library}
+    gem.homepage = "http://github.com/jgrunzweig/ffi-libfreenect"
+    gem.authors = ["Josh Grunzweig", "Eric Monti"]
 
-task :default => 'spec:run'
+    gem.add_dependency("ffi", ">= 0.5.0")
 
-PROJ.name = 'ffi-libfreenect'
-PROJ.authors = ['Josh Grunzweig', 'Eric Monti']
-PROJ.description = 'FFI bindings for the libfreenect OpenKinect library'
-PROJ.url = nil
-PROJ.version = File.open("version.txt","r"){|f| f.readline.chomp}
-PROJ.readme_file = 'README.rdoc'
+    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
+  end
+  Jeweler::GemcutterTasks.new
+rescue LoadError
+  puts "Jeweler (or a dependency) not available. Install it with: gem install jeweler"
+end
 
-PROJ.spec.opts << '--color'
-PROJ.rdoc.opts << '--line-numbers'
-PROJ.notes.tags << "X"+"XX" # muhah! so we don't note our-self
+require 'spec/rake/spectask'
+Spec::Rake::SpecTask.new(:spec) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.spec_files = FileList['spec/**/*_spec.rb']
+end
 
-# exclude rcov.rb and external libs from rcov report
-PROJ.rcov.opts += [
-  "--exclude",  "rcov", 
-  "--exclude",  "ffi", 
-]
+Spec::Rake::SpecTask.new(:rcov) do |spec|
+  spec.libs << 'lib' << 'spec'
+  spec.pattern = 'spec/**/*_spec.rb'
+  spec.rcov = true
+end
 
-depend_on 'ffi', '>= 0.6.0'
+task :spec => :check_dependencies
 
-# EOF
+task :default => :spec
+
+begin
+  require 'yard'
+  YARD::Rake::YardocTask.new
+rescue LoadError
+  task :yardoc do
+    abort "YARD is not available. In order to run yardoc, you must: sudo gem install yard"
+  end
+end
