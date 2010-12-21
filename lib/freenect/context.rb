@@ -43,7 +43,7 @@ module Freenect
     end
 
     def process_events
-      ::FFI::Freenect.process_events(context)
+      ::FFI::Freenect.freenect_process_events(context)
     end
 
     def close
