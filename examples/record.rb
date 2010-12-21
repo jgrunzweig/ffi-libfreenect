@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+begin
+  require 'rubygems'
+rescue LoadError
+end
+
+$: << File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
+require 'freenect'
+
+$last_timestamp = 0
+$record_running = 1
+
+def open_dump(type, timestamp, extension)
+  $last_timestamp = timestamp
+  filename = "%s-%f-%i.%s" % [ type, Time.now.to_f, timestamp, extension]
+  STDERR.puts "Writing: #{filename}"
+  File.open("INDEX.txt", "a"){|f| f.puts(filename) }
+  File.open(File.expand_path(filename), "wb") {|f| yield f}
+end
+
+orig_dir = Dir.pwd
+unless out_dir = ARGV.shift
+  STDERR.puts "usage: #{File.basename $0} output_dir"
+  exit 1
+end
+
+trap('INT') do
+  STDERR.puts "Caught INT signal cleaning up"
+  $record_running = 0
+end
+
+Dir.mkdir(out_dir) unless File.directory?(out_dir)
+Dir.chdir(out_dir)
+
+ctx = Freenect.init()
+dev = ctx.open_device(0)
+
+dev.set_depth_format(Freenect::DEPTH_11BIT)
+dev.start_depth()
+dev.set_video_format(Freenect::VIDEO_RGB)
+dev.start_video()
+
+dev.set_depth_callback do |device, depth, timestamp|
+  open_dump('d', timestamp, "pgm") do |f|
+    f.puts("P5 %d %d 65535\n" % [ Freenect::FRAME_W, Freenect::FRAME_H ] )
+    f.write(depth.read_string_length(Freenect::DEPTH_11BIT_SIZE))
+  end
+end
+
+dev.set_video_callback do |device, video, timestamp|
+  open_dump('r', timestamp, 'ppm') do |f|
+    f.puts("P6 %d %d 255\n" % [ Freenect::FRAME_W, Freenect::FRAME_H ] )
+    f.write(video.read_string_length(Freenect::RGB_SIZE))
+  end
+end
+
+while $record_running and (ctx.process_events >= 0)
+  open_dump('a', $last_timestamp, "dump") do |f|
+    state = dev.get_tilt_state
+    f.write(state.to_ptr.read_string_length(state.size))
+  end
+end
+
+Dir.chdir(orig_dir)
+dev.stop_depth
+dev.stop_video
+dev.close
+ctx.close
