@@ -16,7 +16,6 @@ module Freenect
       end
 
       @dev = dev_p.read_pointer
-      set_tilt_degrees(0.0)
     end
 
     def closed?
