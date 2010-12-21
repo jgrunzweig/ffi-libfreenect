@@ -4,7 +4,6 @@
 require 'ffi/freenect'
 require 'freenect/context'
 require 'freenect/device'
-require 'freenect/sync'
 
 module Freenect
   def self.init(*args)
