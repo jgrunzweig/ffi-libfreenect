@@ -18,29 +18,27 @@ $: << File.expand_path(File.join(File.dirname(__FILE__), "../lib"))
 require 'freenect'
 
 $last_timestamp = 0
-$record_running = 1
+$record_running = true
 
 def open_dump(type, timestamp, extension)
   $last_timestamp = timestamp
   filename = "%s-%f-%i.%s" % [ type, Time.now.to_f, timestamp, extension]
-  STDERR.puts "Writing: #{filename}"
-  File.open("INDEX.txt", "a"){|f| f.puts(filename) }
-  File.open(File.expand_path(filename), "wb") {|f| yield f}
+  STDERR.puts "Writing: #{File.join($out_dir, filename)}"
+  File.open(File.join($out_dir,"INDEX.txt"), "a"){|f| f.puts(filename) }
+  File.open(File.join($out_dir, filename), "wb") {|f| yield f}
 end
 
 orig_dir = Dir.pwd
-unless out_dir = ARGV.shift
+unless $out_dir = ARGV.shift
   STDERR.puts "usage: #{File.basename $0} output_dir"
   exit 1
 end
+Dir.mkdir($out_dir) unless File.directory?($out_dir)
 
 trap('INT') do
   STDERR.puts "Caught INT signal cleaning up"
-  $record_running = 0
+  $record_running = false
 end
-
-Dir.mkdir(out_dir) unless File.directory?(out_dir)
-Dir.chdir(out_dir)
 
 ctx = Freenect.init()
 dev = ctx.open_device(0)
