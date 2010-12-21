@@ -25,7 +25,7 @@ module Freenect
     end
 
     def num_devices
-      ::FFI::Freenect.freenect_num_devices(context)
+      ::FFI::Freenect.freenect_num_devices(self.context)
     end
 
     def open_device(idx)
@@ -35,15 +35,15 @@ module Freenect
     alias [] open_device
 
     def set_log_level(loglevel)
-      ::FFI::Freenect.freenect_set_log_level(context, loglevel)
+      ::FFI::Freenect.freenect_set_log_level(self.context, loglevel)
     end
 
     def set_log_callback(&block)
-      ::FFI::Freenect.freenect_set_log_callback(context, block)
+      ::FFI::Freenect.freenect_set_log_callback(self.context, block)
     end
 
     def process_events
-      ::FFI::Freenect.freenect_process_events(context)
+      ::FFI::Freenect.freenect_process_events(self.context)
     end
 
     def close
