@@ -32,14 +32,16 @@ FFI-based Ruby wrapper for the OpenKinect libfreenect library.
     end
 
     STDERR.puts "Selecting device 0"
-    dev.set_led(:red)   # play with the led
     dev = ctx.open_device(0)
+
+    dev.set_led(:red)   # play with the led
     dev.set_tilt_degrees(30)  # tilt up to max
     sleep 1
     dev.set_tilt_degrees(-30) # tilt down to max
     sleep 1
     dev.set_tilt_degrees(0.0) # tilt back to center
     sleep 1
+    dev.set_led(:green)   # play with the led
 
     # Actual video and depth capture work similarly to eachother.
     # But they're still both pretty un-sugary.
@@ -59,7 +61,7 @@ FFI-based Ruby wrapper for the OpenKinect libfreenect library.
     STDERR.puts "Taking snapshot"
     dev.set_video_callback do |device, video, timestamp|
       if not $snapshot_finished
-        fname = "%i.ppm" % timestamp
+        fname = "%u.ppm" % timestamp
         STDERR.puts "Writing #{fname}"
         File.open(fname, "w") do |f|
           f.puts("P6 %d %d 255\n" % [ Freenect::FRAME_W, Freenect::FRAME_H ] )

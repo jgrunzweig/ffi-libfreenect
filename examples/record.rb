@@ -22,7 +22,7 @@ $record_running = true
 
 def open_dump(type, timestamp, extension)
   $last_timestamp = timestamp
-  filename = "%s-%f-%i.%s" % [ type, Time.now.to_f, timestamp, extension]
+  filename = "%s-%f-%u.%s" % [ type, Time.now.to_f, timestamp, extension]
   STDERR.puts "Writing: #{File.join($out_dir, filename)}"
   File.open(File.join($out_dir,"INDEX.txt"), "a"){|f| f.puts(filename) }
   File.open(File.join($out_dir, filename), "wb") {|f| yield f}

@@ -22,16 +22,6 @@ end
 STDERR.puts "Selecting device 0"
 dev = ctx.open_device(0)
 
-dev.set_led(:red)   # play with the led
-
-STDERR.puts "Nodding..."
-dev.set_tilt_degrees(30)  # tilt up to max
-sleep 1
-dev.set_tilt_degrees(-30) # tilt down to max
-sleep 2
-dev.set_tilt_degrees(0.0) # tilt back to center
-sleep 1
-
 dev.set_led(:green)   # play with the led
 
 dev.set_video_format(Freenect::VIDEO_RGB)
