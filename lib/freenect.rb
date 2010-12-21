@@ -6,6 +6,8 @@ require 'freenect/context'
 require 'freenect/device'
 
 module Freenect
+  include FFI::Freenect
+
   def self.init(*args)
     Context.new(*args)
   end
