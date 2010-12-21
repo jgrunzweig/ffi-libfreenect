@@ -9,6 +9,7 @@ begin
     gem.homepage = "http://github.com/jgrunzweig/ffi-libfreenect"
     gem.authors = ["Josh Grunzweig", "Eric Monti"]
 
+    gem.rdoc_options += ["--title", "FFI Freenect", "--main",  "README.rdoc", "--line-numbers"]
     gem.add_dependency("ffi", ">= 0.5.0")
 
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
