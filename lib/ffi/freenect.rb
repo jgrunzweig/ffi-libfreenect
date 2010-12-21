@@ -131,8 +131,8 @@ module FFI::Freenect
   end
 
   callback :freenect_log_cb, [:freenect_context, LOGLEVELS, :string], :void
-  callback :freenect_depth_cb, [:freenect_device, :pointer, :int], :void
-  callback :freenect_video_cb, [:freenect_device, :pointer, :int], :void
+  callback :freenect_depth_cb, [:freenect_device, :pointer, :uint], :void
+  callback :freenect_video_cb, [:freenect_device, :pointer, :uint], :void
 
   attach_function :freenect_set_log_level, [:freenect_context, LOGLEVELS], :void
   attach_function :freenect_set_log_callback, [:freenect_context, :freenect_log_cb], :void
