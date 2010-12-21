@@ -37,8 +37,8 @@ ctx = Freenect.init()
 dev = ctx.open_device(0)
 
 dev.set_depth_format(Freenect::DEPTH_11BIT)
-dev.start_depth()
 dev.set_video_format(Freenect::VIDEO_RGB)
+dev.start_depth()
 dev.start_video()
 
 dev.set_depth_callback do |device, depth, timestamp|

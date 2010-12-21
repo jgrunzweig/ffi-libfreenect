@@ -60,13 +60,14 @@ module Freenect
 
     alias tilt_degs get_tilt_degs
 
-
     def set_depth_callback(&block)
-      ::FFI::Freenect.freenect_set_depth_callback(self.device, block)
+      @depth_callback = block
+      ::FFI::Freenect.freenect_set_depth_callback(self.device, @depth_callback)
     end
 
     def set_video_callback(&block)
-      ::FFI::Freenect.freenect_set_video_callback(self.device, block)
+      @video_callback = block
+      ::FFI::Freenect.freenect_set_video_callback(self.device, @video_callback)
     end
 
     def start_depth
