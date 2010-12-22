@@ -3,16 +3,15 @@ require 'spec_helper'
 
 describe Freenect::Device do
   before(:all) do
-    (@ctx = Freenect.init()).should be_kind_of(Freenect::Context)
-    @ctx.num_devices.should >= 1
-    (@dev = @ctx.open_device(0)).should be_kind_of(Freenect::Device)
+    @ctx = Freenect.init()
+    @dev = @ctx.open_device(0)
   end
 
   after(:all) do
-    @dev.set_tilt_degrees(0)
-    @dev.set_led(:off)
-    @dev.close
-    @ctx.close
+    @dev.set_tilt_degrees(0) if @dev
+    @dev.set_led(:off) if @dev
+    @dev.close if @dev
+    @ctx.close if @ctx
   end
 
   it "should indicate whether it is in a closed state" do
