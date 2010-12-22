@@ -109,19 +109,27 @@ module Freenect
     alias on_video set_video_callback
 
     def start_depth
-      ::FFI::Freenect.freenect_start_depth(self.device)
+      unless(::FFI::Freenect.freenect_start_depth(self.device) == 0)
+        raise DeviceError, "Error in freenect_start_depth()"
+      end
     end
 
     def stop_depth
-      ::FFI::Freenect.freenect_stop_depth(self.device)
+      unless(::FFI::Freenect.freenect_stop_depth(self.device) == 0)
+        raise DeviceError, "Error in freenect_stop_depth()"
+      end
     end
 
     def start_video
-      ::FFI::Freenect.freenect_start_video(self.device)
+      unless(::FFI::Freenect.freenect_start_video(self.device) == 0)
+        raise DeviceError, "Error in freenect_start_video()"
+      end
     end
 
     def stop_video
-      ::FFI::Freenect.freenect_stop_video(self.device)
+      unless(::FFI::Freenect.freenect_stop_video(self.device) == 0)
+        raise DeviceError, "Error in freenect_stop_video()"
+      end
     end
 
     def set_depth_format(fmt)
