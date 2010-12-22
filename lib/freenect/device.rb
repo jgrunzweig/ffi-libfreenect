@@ -54,17 +54,18 @@ module Freenect
 
     alias tilt_state get_tilt_state
 
+    # Returns the current tilt angle
     def get_tilt_degrees
       ::FFI::Freenect.freenect_get_tilt_degs(self.device)
     end
 
     alias tilt get_tilt_degrees
 
-    alias tilt_degs get_tilt_degs
-
+    # Sets the tilt angle.
+    # Maximum tilt angle range is between +30 and -30
     def set_tilt_degrees(angle)
       ::FFI::Freenect.freenect_set_tilt_degs(self.device, angle)
-      update_tilt_state()
+      return(update_tilt_state() < 0) # based on libfreenect error cond. as of 12-21-10
     end
 
     alias tilt= set_tilt_degrees
@@ -121,7 +122,7 @@ module Freenect
 
     # returns the symbolic constant for the current depth format
     def depth_format
-      @depth_format.is_a?(Numeric) ::Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
+      @depth_format.is_a?(Numeric) ? ::Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
     end
 
     def set_video_format(fmt)
@@ -133,7 +134,7 @@ module Freenect
     alias video_format= set_video_format
 
     def video_format
-      @video_format.is_a?(Numeric) ::Freenect::VIDEO_FORMATS[@video_format] : @video_format
+      @video_format.is_a?(Numeric) ? ::Freenect::VIDEO_FORMATS[@video_format] : @video_format
     end
 
     def set_led(mode)
