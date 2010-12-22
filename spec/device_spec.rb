@@ -84,14 +84,15 @@ describe Freenect::Device do
     @dev.depth_format.should == :depth_10bit
     @dev.depth_format = Freenect::DEPTH_11BIT
     @dev.depth_format = :depth_11bit
-
   end
 
-  it "should have an object_id to allow it to be called up in the ObjectSpace" do
+  it "should allow itself to be looked up by it's object reference ID" do
     # this isn't really on us. the test is to see if misc ruby vers behave
-    objid = @dev.object_id
-    objid.should be_kind_of(Numeric)
-    ObjectSpace._id2ref(objid).should == @dev
+    ObjectSpace._id2ref(@dev.object_id).should == @dev
+
+    ObjectSpace._id2ref(@dev.reference_id).should == @dev
+
+    Freenect::Device.by_reference(@dev.device).should == @dev
   end
 
 end
