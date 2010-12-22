@@ -54,21 +54,46 @@ module Freenect
 
     alias tilt_state get_tilt_state
 
-    def get_tilt_degs
+    def get_tilt_degrees
       ::FFI::Freenect.freenect_get_tilt_degs(self.device)
     end
 
+    alias tilt get_tilt_degrees
+
     alias tilt_degs get_tilt_degs
 
+    def set_tilt_degrees(angle)
+      ::FFI::Freenect.freenect_set_tilt_degs(self.device, angle)
+      update_tilt_state()
+    end
+
+    alias tilt= set_tilt_degrees
+
+    # Defines a handler for depth events.
+    #
+    # @yield [device, depth_buf, timestamp]
+    # @yieldparam device     A pointer to the device that generated the event.
+    # @yieldparam depth_buf  A pointer to the buffer containing the depth data.
+    # @yieldparam timestamp  A timestamp for the event?
     def set_depth_callback(&block)
       @depth_callback = block
       ::FFI::Freenect.freenect_set_depth_callback(self.device, @depth_callback)
     end
 
+    alias on_depth set_depth_callback
+
+    # Defines a handler for video events.
+    #
+    # @yield [device, video_buf, timestamp]
+    # @yieldparam device     A pointer to the device that generated the event.
+    # @yieldparam video_buf  A pointer to the buffer containing the video data.
+    # @yieldparam timestamp  A timestamp for the event?
     def set_video_callback(&block)
       @video_callback = block
       ::FFI::Freenect.freenect_set_video_callback(self.device, @video_callback)
     end
+
+    alias on_video set_video_callback
 
     def start_depth
       ::FFI::Freenect.freenect_start_depth(self.device)
@@ -87,21 +112,35 @@ module Freenect
     end
 
     def set_depth_format(fmt)
-      ::FFI::Freenect.freenect_set_depth_format(self.device, fmt)
+      if(::FFI::Freenect.freenect_set_depth_format(self.device, fmt) == 0)
+        @depth_format = fmt
+      end
+    end
+
+    alias depth_format= set_depth_format
+
+    # returns the symbolic constant for the current depth format
+    def depth_format
+      @depth_format.is_a?(Numeric) ::Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
     end
 
     def set_video_format(fmt)
-      ::FFI::Freenect.freenect_set_depth_format(self.device, fmt)
+      if(::FFI::Freenect.freenect_set_depth_format(self.device, fmt) == 0)
+        @video_format = fmt
+      end
     end
 
-    def set_tilt_degrees(angle)
-      ::FFI::Freenect.freenect_set_tilt_degs(self.device, angle)
-      update_tilt_state()
+    alias video_format= set_video_format
+
+    def video_format
+      @video_format.is_a?(Numeric) ::Freenect::VIDEO_FORMATS[@video_format] : @video_format
     end
 
     def set_led(mode)
       ::FFI::Freenect.freenect_set_led(self.device, mode)
     end
+
+    alias led= set_led
 
     private
     def set_depth_buffer(buf)
