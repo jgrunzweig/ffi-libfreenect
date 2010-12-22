@@ -9,6 +9,17 @@ module Freenect
   end
 
   class Device
+    # Returns a device object tracked by its ruby object reference ID stored
+    # in user data.
+    #
+    # This method is intended for internal use.
+    def self.by_reference(devp)
+      unless devp.null? or (refp=FFI::Freenect.freenect_get_user(devp)).null?
+        obj=ObjectSpace._id2ref(refp.read_long_long)
+        return obj if obj.is_a?(Device)
+      end
+    end
+
     def initialize(ctx, idx)
       dev_p = ::FFI::MemoryPointer.new(:pointer)
       @ctx = ctx
@@ -18,6 +29,7 @@ module Freenect
       end
 
       @dev = dev_p.read_pointer
+      save_object_id!()
     end
 
     def closed?
@@ -43,12 +55,6 @@ module Freenect
     def context
       @ctx
     end
-
-    def get_user_data
-      ::FFI::Freenect.freenect_get_user(self.device)
-    end
-
-    alias user_data get_user_data
 
     def get_tilt_state
       unless (p=::FFI::Freenect.freenect_get_tilt_state(self.device)).null?
@@ -135,6 +141,8 @@ module Freenect
       (@depth_format.is_a?(Numeric))? Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
     end
 
+    # Sets the video format to one of the following accepted values:
+    #
     def set_video_format(fmt)
       l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::VIDEO_FORMATS[fmt]
       ret = ::FFI::Freenect.freenect_set_video_format(self.device, l_fmt)
@@ -167,6 +175,12 @@ module Freenect
 
     alias led= set_led
 
+    def reference_id
+      unless (p=::FFI::Freenect.freenect_get_user(device)).null?
+        p.read_long_long
+      end
+    end
+
     private
     def set_depth_buffer(buf)
     end
@@ -174,10 +188,11 @@ module Freenect
     def set_video_buffer(buf)
     end
 
-    def set_user_data(user)
-      ::FFI::Freenect.freenect_set_user(self.device, user)
+    def save_object_id!
+      objid_p = FFI::MemoryPointer.new(:long_long)
+      objid_p.write_long_long(self.object_id)
+      ::FFI::Freenect.freenect_set_user(self.device, objid_p)
     end
-    alias user_data= set_user_data
 
     def update_tilt_state
       ::FFI::Freenect.freenect_update_tilt_state(self.device)
