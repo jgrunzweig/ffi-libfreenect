@@ -3,6 +3,8 @@ require 'ffi/freenect'
 require 'freenect/context'
 
 module Freenect
+  RawTiltState = FFI::Freenect::RawTiltState
+
   class DeviceError < StandardError
   end
 
@@ -38,6 +40,10 @@ module Freenect
       end
     end
 
+    def context
+      @ctx
+    end
+
     def get_user_data
       ::FFI::Freenect.freenect_get_user(self.device)
     end
@@ -46,7 +52,7 @@ module Freenect
 
     def get_tilt_state
       unless (p=::FFI::Freenect.freenect_get_tilt_state(self.device)).null?
-        return FFI::Freenect::RawTiltState.new(p)
+        return RawTiltState.new(p)
       else
         raise DeviceError, "freenect_get_tilt_state() returned a NULL tilt_state"
       end
@@ -113,8 +119,12 @@ module Freenect
     end
 
     def set_depth_format(fmt)
-      if(::FFI::Freenect.freenect_set_depth_format(self.device, fmt) == 0)
+      l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::DEPTH_FORMATS[fmt]
+      ret = ::FFI::Freenect.freenect_set_depth_format(self.device, l_fmt)
+      if (ret== 0)
         @depth_format = fmt
+      else
+        raise DeviceError, "Error calling freenect_set_depth_format(self, #{fmt})"
       end
     end
 
@@ -122,23 +132,37 @@ module Freenect
 
     # returns the symbolic constant for the current depth format
     def depth_format
-      @depth_format.is_a?(Numeric) ? ::Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
+      (@depth_format.is_a?(Numeric))? Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
     end
 
     def set_video_format(fmt)
-      if(::FFI::Freenect.freenect_set_depth_format(self.device, fmt) == 0)
+      l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::VIDEO_FORMATS[fmt]
+      ret = ::FFI::Freenect.freenect_set_video_format(self.device, l_fmt)
+      if (ret== 0)
         @video_format = fmt
+      else
+        raise DeviceError, "Error calling freenect_set_video_format(self, #{fmt})"
       end
     end
 
     alias video_format= set_video_format
 
     def video_format
-      @video_format.is_a?(Numeric) ? ::Freenect::VIDEO_FORMATS[@video_format] : @video_format
+      (@video_format.is_a?(Numeric))? ::Freenect::VIDEO_FORMATS[@video_format] : @video_format
     end
 
+    # Sets the led to one of the following accepted values:
+    #   :off,               Freenect::LED_OFF
+    #   :green,             Freenect::LED_GREEN
+    #   :red,               Freenect::LED_RED
+    #   :yellow,            Freenect::LED_YELLOW
+    #   :blink_yellow,      Freenect::LED_BLINK_YELLOW
+    #   :blink_green,       Freenect::LED_BLINK_GREEN
+    #   :blink_red_yellow,  Freenect::LED_BLINK_RED_YELLOW
+    #
+    # Either the symbol or numeric constant can be specified.
     def set_led(mode)
-      ::FFI::Freenect.freenect_set_led(self.device, mode)
+      return(::FFI::Freenect.freenect_set_led(self.device, mode) == 0)
     end
 
     alias led= set_led
