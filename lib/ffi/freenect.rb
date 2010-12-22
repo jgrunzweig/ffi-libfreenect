@@ -148,8 +148,8 @@ module FFI::Freenect
   attach_function :freenect_set_video_callback, [:freenect_device, :freenect_video_cb], :void  
   attach_function :freenect_set_depth_format, [:freenect_device, DEPTH_FORMATS], :int
   attach_function :freenect_set_video_format, [:freenect_device, VIDEO_FORMATS], :int
-  attach_function :freenect_set_depth_buffer, [:freenect_device, :void], :int
-  attach_function :freenect_set_video_buffer, [:freenect_device, :void], :int
+  attach_function :freenect_set_depth_buffer, [:freenect_device, :pointer], :int
+  attach_function :freenect_set_video_buffer, [:freenect_device, :pointer], :int
   attach_function :freenect_start_depth, [:freenect_device], :int
   attach_function :freenect_start_video, [:freenect_device], :int
   attach_function :freenect_stop_depth, [:freenect_device], :int
