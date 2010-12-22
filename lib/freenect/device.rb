@@ -189,17 +189,19 @@ module Freenect
       end
     end
 
-    private
     def set_depth_buffer(buf)
+      FFI::Freenect.freenect_set_depth_buffer(self.device, buf)
     end
 
     def set_video_buffer(buf)
+      FFI::Freenect.freenect_set_video_buffer(self.device, buf)
     end
 
+    private
     def save_object_id!
-      objid_p = FFI::MemoryPointer.new(:long_long)
-      objid_p.write_long_long(self.object_id)
-      ::FFI::Freenect.freenect_set_user(self.device, objid_p)
+      @objid_p = FFI::MemoryPointer.new(:long_long)
+      @objid_p.write_long_long(self.object_id)
+      ::FFI::Freenect.freenect_set_user(self.device, @objid_p)
     end
 
     def update_tilt_state
