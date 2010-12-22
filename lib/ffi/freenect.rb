@@ -62,9 +62,9 @@ module FFI::Freenect
                         :bayer,           VIDEO_BAYER,
                         :ir_8bit,         VIDEO_IR_8BIT,
                         :ir_10bit,        VIDEO_IR_10BIT,
-                        :ir_10bit_packed, VIDEO_IR_10BIT_PACKED,
                         :yuv_rgb,         VIDEO_YUV_RGB,
-                        :yuv_raw,         VIDEO_YUV_RAW )
+                        :yuv_raw,         VIDEO_YUV_RAW,
+                        :ir_10bit_packed, VIDEO_IR_10BIT_PACKED)
   
   VIDEO_SIZES = enum( :rgb,             RGB_SIZE,
                       :bayer,           BAYER_SIZE,
