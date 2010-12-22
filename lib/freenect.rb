@@ -25,7 +25,6 @@ module Freenect
     end
   end
 
-
   def self.lookup_depth_format(fmt)
     return (fmt.is_a?(Numeric) ? fmt : FFI::Freenect::DEPTH_FORMATS[fmt])
   end
@@ -38,5 +37,4 @@ module Freenect
       return sz
     end
   end
-
 end
