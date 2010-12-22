@@ -1,4 +1,4 @@
-= ffi-libfreespec
+= ffi-libfreenect
 
 FFI-based Ruby wrapper for the OpenKinect libfreenect library.
 
