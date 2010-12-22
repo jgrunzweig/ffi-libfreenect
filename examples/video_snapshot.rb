@@ -30,7 +30,7 @@ dev.start_video()
 
 $snapshot_finished = nil
 
-STDERR.puts "Taking snapshot"
+STDERR.puts "Attempting snapshot"
 dev.set_video_callback do |device, video, timestamp|
   if not $snapshot_finished
     fname = "%i.ppm" % timestamp
@@ -43,8 +43,13 @@ dev.set_video_callback do |device, video, timestamp|
   end
 end
 
+ret = -1
 until $snapshot_finished 
-  break if (ctx.process_events >= 0)
+  break if (ret=ctx.process_events) >= 0
+end
+
+if ret < 0
+  STDERR.puts "Error: unable to take snapshot. process_events code=#{ret}"
 end
 
 dev.set_led(:off)
