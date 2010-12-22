@@ -72,7 +72,7 @@ FFI-based Ruby wrapper for the OpenKinect libfreenect library.
     end
 
     until $snapshot_finished 
-      break if (ctx.process_events >= 0)
+      break if (ctx.process_events < 0)
     end
 
     dev.set_led(:off)

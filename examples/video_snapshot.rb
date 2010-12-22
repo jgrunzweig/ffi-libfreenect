@@ -45,7 +45,7 @@ end
 
 ret = -1
 until $snapshot_finished 
-  break if (ret=ctx.process_events) >= 0
+  break if (ret=ctx.process_events) < 0
 end
 
 if ret < 0
