@@ -38,6 +38,8 @@ module Freenect
       ::FFI::Freenect.freenect_set_log_level(self.context, loglevel)
     end
 
+    alias log_level= set_log_level
+
     def set_log_callback(&block)
       ::FFI::Freenect.freenect_set_log_callback(self.context, block)
     end
