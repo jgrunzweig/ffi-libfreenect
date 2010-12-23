@@ -40,14 +40,21 @@ describe Freenect::Device do
     @dev.tilt = 0
     sleep 1
     @dev.tilt.should == 0
-
     @dev.tilt = 10
-    pending "calibration reversing?"
+  end
+
+  it "should indicate its current tilt angle after changes" do
+    pending "calibration reversing?" # TODO revisit ?
+    @dev.tilt = 5
     sleep 1
     @dev.tilt.should > 0
     @dev.tilt = 0
-    sleep 1
+    sleep 2
     @dev.tilt.should == 0
+    @dev.tilt = -5
+    sleep 1
+    @dev.tilt.should > 0
+    @dev.tilt = 0
   end
 
   it "should allow the led to be set using symbols or numeric constants" do
