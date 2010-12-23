@@ -136,6 +136,7 @@ module Freenect
       l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::DEPTH_FORMATS[fmt]
       ret = ::FFI::Freenect.freenect_set_depth_format(self.device, l_fmt)
       if (ret== 0)
+        init_depth_buffer(fmt)
         @depth_format = fmt
       else
         raise DeviceError, "Error calling freenect_set_depth_format(self, #{fmt})"
@@ -155,6 +156,7 @@ module Freenect
       l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::VIDEO_FORMATS[fmt]
       ret = ::FFI::Freenect.freenect_set_video_format(self.device, l_fmt)
       if (ret== 0)
+        init_video_buffer(fmt)
         @video_format = fmt
       else
         raise DeviceError, "Error calling freenect_set_video_format(self, #{fmt})"
@@ -189,15 +191,37 @@ module Freenect
       end
     end
 
-    def set_depth_buffer(buf)
-      FFI::Freenect.freenect_set_depth_buffer(self.device, buf)
+    def video_buffer
+      if @video_buffer and @video_buf_size
+        @video_buffer.read_string_length(@video_buf_size)
+      end
     end
 
-    def set_video_buffer(buf)
-      FFI::Freenect.freenect_set_video_buffer(self.device, buf)
+    def depth_buffer
+      if @depth_buffer and @depth_buf_size
+        @depth_buffer.read_string_length(@depth_buf_size)
+      end
     end
 
     private
+    def init_depth_buffer(fmt=:depth_11bit)
+      if (sz = Freenect.lookup_depth_size(fmt)).nil?
+        raise(Freenect::FormatError, "invalid depth format: #{fmt.inspect}")
+      end
+      @depth_buf_size = sz
+      @depth_buffer = FFI::MemoryPointer.new(@depth_buf_size)
+      FFI::Freenect.freenect_set_depth_buffer(self.device, @depth_buffer)
+    end
+
+    def init_video_buffer(fmt)
+      if (sz = Freenect.lookup_video_size(fmt)).nil?
+        raise(Freenect::FormatError, "invalid video format: #{fmt.inspect}")
+      end
+      @video_buf_size = sz
+      @video_buffer = FFI::MemoryPointer.new(@video_buf_size)
+      FFI::Freenect.freenect_set_video_buffer(self.device, @video_buffer)
+    end
+
     def save_object_id!
       @objid_p = FFI::MemoryPointer.new(:long_long)
       @objid_p.write_long_long(self.object_id)

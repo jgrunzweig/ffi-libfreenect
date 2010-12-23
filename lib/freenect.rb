@@ -6,6 +6,10 @@ require 'freenect/context'
 require 'freenect/device'
 
 module Freenect
+  class FormatError < StandardError
+  end
+
+
   include FFI::Freenect
 
   def self.init(*args)
