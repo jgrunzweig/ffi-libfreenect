@@ -17,13 +17,12 @@ display = Proc.new do
 	glRasterPos2i(0, 480)
   glPixelZoom(1, -1)
 
-  glDrawPixels(640, 480, GL_RGB, GL_UNSIGNED_BYTE, $videobuf.read_string_length(Freenect::RGB_SIZE))
+  glDrawPixels(640, 480, GL_RGB, GL_UNSIGNED_BYTE, $dev.video_buffer)
 	glutSwapBuffers()
 end
 
 play = Proc.new do
-  $ctx.process_events
-  glutPostRedisplay()
+  glutPostRedisplay() if $ctx.process_events >= 0
 end
 
 
@@ -60,13 +59,9 @@ STDERR.puts "opening kinect"
 $ctx = Freenect.init
 $dev = $ctx[0]
 
-$videobuf = FFI::MemoryPointer.new(Freenect::RGB_SIZE)
-$depthbuf = FFI::MemoryPointer.new(Freenect::DEPTH_11BIT_SIZE)
 
 $dev.set_video_format(:rgb)
 $dev.set_depth_format(:depth_11bit)
-$dev.set_video_buffer($videobuf)
-$dev.set_depth_buffer($depthbuf)
 
 $dev.tilt = $tilt = 0
 
