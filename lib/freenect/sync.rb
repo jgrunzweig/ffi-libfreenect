@@ -1,5 +1,7 @@
-
 require 'freenect'
+require 'ffi/freenect'
+
+if FFI::Freenect::HAS_FREENECT_SYNC
 
 module Freenect
   module Sync
@@ -88,3 +90,4 @@ module Freenect
   end
 end
 
+end
