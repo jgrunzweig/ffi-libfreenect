@@ -4,8 +4,13 @@ FFI-based Ruby wrapper for the OpenKinect libfreenect library.
 
 == Requirements
   * ffi >= 0.5.0
+  * libfreenect - see: http://openkinect.org/wiki/Getting_Started
 
 == Installation
+
+===
+
+Make sure you have a correct installation of libfreenect before beginning. See: http://openkinect.org/wiki/Getting_Started
 
 === via Gem
 
