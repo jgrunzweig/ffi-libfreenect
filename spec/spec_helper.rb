@@ -1,5 +1,6 @@
 require "simplecov"
 SimpleCov.start
+require "byebug"
 
 SPEC_DIR = File.expand_path(File.dirname(__FILE__))
 

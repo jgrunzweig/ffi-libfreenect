@@ -132,41 +132,37 @@ module Freenect
       end
     end
 
-    def set_depth_format(fmt)
-      l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::DEPTH_FORMATS[fmt]
-      ret = ::FFI::Freenect.freenect_set_depth_format(self.device, l_fmt)
-      if (ret== 0)
-        init_depth_buffer(fmt)
-        @depth_format = fmt
-      else
-        raise DeviceError, "Error calling freenect_set_depth_format(self, #{fmt})"
-      end
+    def set_depth_mode(mode)
+      mode = Freenect.depth_mode(:medium, mode) unless mode.is_a?(Freenect::FrameMode)
+      raise ArgumentError, "Unkown depth mode #{mode}" if mode.nil?    
+      ret = ::FFI::Freenect.freenect_set_depth_mode(self.device, mode)
+      raise DeviceError, "Error calling freenect_set_depth_mode(self, #{mode}) returned #{ret}" unless ret == 0
     end
-
-    alias depth_format= set_depth_format
-
+    alias depth_mode= set_depth_mode
+    
     # returns the symbolic constant for the current depth format
-    def depth_format
-      (@depth_format.is_a?(Numeric))? Freenect::DEPTH_FORMATS[@depth_format] : @depth_format
+    def depth_mode
+      x = ::FFI::Freenect.freenect_get_current_depth_mode(self.device)
+      x = nil if x.height*x.width == 0 or x.framerate == 0
+      x.frame_mode_type = :depth unless x.nil?
+      x
     end
 
     # Sets the video format to one of the following accepted values:
     #
-    def set_video_format(fmt)
-      l_fmt = fmt.is_a?(Numeric)? fmt : Freenect::VIDEO_FORMATS[fmt]
-      ret = ::FFI::Freenect.freenect_set_video_format(self.device, l_fmt)
-      if (ret== 0)
-        init_video_buffer(fmt)
-        @video_format = fmt
-      else
-        raise DeviceError, "Error calling freenect_set_video_format(self, #{fmt})"
-      end
+    def set_video_mode(mode)
+      mode = Freenect.video_mode(:medium, mode) unless mode.is_a?(Freenect::FrameMode)
+      raise ArgumentError, "Unkown video mode #{mode}" if mode.nil?    
+      ret = ::FFI::Freenect.freenect_set_video_mode(self.device, mode)
+      raise DeviceError, "Error calling freenect_set_video_mode(self, #{mode}) returned #{ret}" unless ret == 0
     end
+    alias video_mode= set_video_mode
 
-    alias video_format= set_video_format
-
-    def video_format
-      (@video_format.is_a?(Numeric))? ::Freenect::VIDEO_FORMATS[@video_format] : @video_format
+    def video_mode
+      x = ::FFI::Freenect.freenect_get_current_video_mode(self.device)
+      x = nil if x.height*x.width == 0 or x.framerate == 0
+      x.frame_mode_type = :video unless x.nil?
+      x
     end
 
     # Sets the led to one of the following accepted values:
@@ -191,41 +187,17 @@ module Freenect
       end
     end
 
-    def video_buffer
-      if @video_buffer and @video_buf_size
-        @video_buffer.read_string_length(@video_buf_size)
-      end
-    end
-
-    def depth_buffer
-      if @depth_buffer and @depth_buf_size
-        @depth_buffer.read_string_length(@depth_buf_size)
-      end
-    end
-
     private
-    def init_depth_buffer(fmt=:depth_11bit)
-      if (sz = Freenect.lookup_depth_size(fmt)).nil?
-        raise(Freenect::FormatError, "invalid depth format: #{fmt.inspect}")
-      end
-      @depth_buf_size = sz
-      @depth_buffer = FFI::MemoryPointer.new(@depth_buf_size)
-      FFI::Freenect.freenect_set_depth_buffer(self.device, @depth_buffer)
+    def set_depth_buffer(buf)
     end
 
-    def init_video_buffer(fmt)
-      if (sz = Freenect.lookup_video_size(fmt)).nil?
-        raise(Freenect::FormatError, "invalid video format: #{fmt.inspect}")
-      end
-      @video_buf_size = sz
-      @video_buffer = FFI::MemoryPointer.new(@video_buf_size)
-      FFI::Freenect.freenect_set_video_buffer(self.device, @video_buffer)
+    def set_video_buffer(buf)
     end
 
     def save_object_id!
-      @objid_p = FFI::MemoryPointer.new(:long_long)
-      @objid_p.write_long_long(self.object_id)
-      ::FFI::Freenect.freenect_set_user(self.device, @objid_p)
+      objid_p = FFI::MemoryPointer.new(:long_long)
+      objid_p.write_long_long(self.object_id)
+      ::FFI::Freenect.freenect_set_user(self.device, objid_p)
     end
 
     def update_tilt_state

@@ -38,58 +38,42 @@ describe Freenect::Device do
 
   it "should allow the tilt angle to be set" do
     @dev.tilt = 0
-    sleep 1
+    sleep 2
     @dev.tilt.should == 0
-    @dev.tilt = 10
-  end
 
-  it "should indicate its current tilt angle after changes" do
-    pending "calibration reversing?" # TODO revisit ?
-    @dev.tilt = 5
-    sleep 1
+    @dev.tilt = 10
+    pending "calibration reversing?"
+    sleep 2
     @dev.tilt.should > 0
     @dev.tilt = 0
     sleep 2
     @dev.tilt.should == 0
-    @dev.tilt = -5
-    sleep 1
-    @dev.tilt.should > 0
-    @dev.tilt = 0
   end
 
   it "should allow the led to be set using symbols or numeric constants" do
-    (@dev.led = :off).should be_true
-    (@dev.led = :red).should be_true
-    (@dev.led = :yellow).should be_true
-    (@dev.led = :green).should be_true
-    (@dev.led = :blink_green).should be_true
-    (@dev.led = :blink_yellow).should be_true
-    (@dev.led = :blink_red_yellow).should be_true
-
-    (@dev.led = Freenect::LED_OFF).should be_true
-    (@dev.led = Freenect::LED_GREEN).should be_true
-    (@dev.led = Freenect::LED_RED).should be_true
-    (@dev.led = Freenect::LED_YELLOW).should be_true
-    (@dev.led = Freenect::LED_BLINK_YELLOW).should be_true
-    (@dev.led = Freenect::LED_BLINK_GREEN).should be_true
-    (@dev.led = Freenect::LED_BLINK_RED_YELLOW).should be_true
+    [:off, :red, :yellow, :green, :blink_green, :blink_yellow, :blink_red_yellow,
+      Freenect::LED_OFF, Freenect::LED_GREEN, Freenect::LED_RED, Freenect::LED_YELLOW,
+      Freenect::LED_BLINK_YELLOW, Freenect::LED_BLINK_GREEN, Freenect::LED_BLINK_RED_YELLOW
+    ].each do |led_color|
+      expect{@dev.led = led_color}.to_not raise_error
+    end
   end
 
   it "should allow the video_format to be set and retrieved" do
-    @dev.video_format.should be_nil # at first
-    @dev.video_format = :bayer
-    @dev.video_format.should == :bayer
-    @dev.video_format = Freenect::VIDEO_RGB
-    @dev.video_format.should == :rgb
+    @dev.video_mode = Freenect.video_mode(:medium, :bayer)
+    @dev.video_mode.format.should == :bayer
+    @dev.video_mode = :rgb
+    @dev.video_mode.format.should == :rgb
+    @dev.video_mode.frame_mode_type.should == :video
   end
 
 
   it "should allow the depth_format to be set and retrieved" do
-    @dev.depth_format.should be_nil # at first
-    @dev.depth_format = :depth_10bit
-    @dev.depth_format.should == :depth_10bit
-    @dev.depth_format = Freenect::DEPTH_11BIT
-    @dev.depth_format = :depth_11bit
+    @dev.depth_mode = Freenect.depth_mode(:medium, :depth_10bit)
+    @dev.depth_mode.format.should == :depth_10bit
+    @dev.depth_mode = :depth_11bit
+    @dev.depth_mode.format.should == :depth_11bit
+    @dev.depth_mode.frame_mode_type.should == :depth
   end
 
   it "should allow itself to be looked up by it's object reference ID" do

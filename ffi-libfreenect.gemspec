@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec"
   spec.add_development_dependency "simplecov"
   spec.add_development_dependency "yard"
+  spec.add_development_dependency "byebug"
 
   spec.add_dependency("ffi", ">= 0.5.0")
 end
