@@ -1,7 +1,3 @@
-== 0.1.2 / 2010-12-23
-* Improved video_buffer and depth_buffer wrappers 
-
-
 == 0.1.1 / 2010-12-22
 * Initial release version
 

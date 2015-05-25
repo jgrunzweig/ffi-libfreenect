@@ -1,10 +1,11 @@
-require 'freenect'
-require 'ffi/freenect'
 
-if FFI::Freenect::HAS_FREENECT_SYNC
+require 'freenect'
 
 module Freenect
   module Sync
+    class FormatError < StandardError
+    end
+
     # Synchronous video function (starts the runloop if it isn't running)
     #
     # @param idx 
@@ -17,7 +18,7 @@ module Freenect
     #   Returns an array containing a numeric timestamp and the video buffer 
     #   snapshot with a size based on the requested video format.
     #
-    # @raise Freenect::FormatError
+    # @raise FormatError
     #   An exception is raised if an invalid format is specified.
     #
     # @raise RuntimeError
@@ -29,7 +30,7 @@ module Freenect
       fmt ||= :rgb
 
       if (buf_size = Freenect.lookup_video_size(fmt)).nil?
-        raise(Freenect::FormatError, "Invalid video format: #{fmt.inspect}")
+        raise(FormatError, "Invalid video format: #{fmt.inspect}")
       end
 
       video_p = FFI::MemoryPointer.new(buf_size)
@@ -56,7 +57,7 @@ module Freenect
     #   Returns an array containing a numeric timestamp and the depth buffer 
     #   snapshot with a size based on the requested video format.
     #
-    # @raise Freenect::FormatError
+    # @raise FormatError
     #   An exception is raised if an invalid format is specified.
     #
     # @raise RuntimeError
@@ -68,7 +69,7 @@ module Freenect
       fmt ||= :depth_11bit
 
       if (buf_size = Freenect.lookup_depth_size(fmt)).nil?
-        raise(Freenect::FormatError, "Invalid depth format: #{fmt.inspect}")
+        raise(FormatError, "Invalid depth format: #{fmt.inspect}")
       end
 
       depth_p = FFI::MemoryPointer.new(buf_size)
@@ -90,4 +91,3 @@ module Freenect
   end
 end
 
-end
